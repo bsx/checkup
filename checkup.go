@@ -181,6 +181,8 @@ func (c Checkup) MarshalJSON() ([]byte, error) {
 				typeName = "tcp"
 			case DNSChecker:
 				typeName = "dns"
+			case ZkChecker:
+				typeName = "zk"
 			default:
 				return result, fmt.Errorf("unknown Checker type")
 			}
@@ -297,7 +299,13 @@ func (c *Checkup) UnmarshalJSON(b []byte) error {
 				return err
 			}
 			c.Checkers = append(c.Checkers, checker)
-
+		case "zk":
+			var checker ZkChecker
+			err = json.Unmarshal(raw.Checkers[i], &checker)
+			if err != nil {
+				return err
+			}
+			c.Checkers = append(c.Checkers, checker)
 		default:
 			return fmt.Errorf("%s: unknown Checker type", t.Type)
 		}
